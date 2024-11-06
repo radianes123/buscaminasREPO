@@ -1,4 +1,5 @@
 import numpy as np
+import pygame, random, sys
 
 class bomb:
     def __init__(self,col,row):
