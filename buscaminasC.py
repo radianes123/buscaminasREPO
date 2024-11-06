@@ -10,6 +10,9 @@ BLACK = (0,0,0)
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 300
 
+font_path = "Grand9k_Pixel.ttf"
+font = pygame.font.Font(font_path, 30)
+
 class field:
     def __init__(self,cols,rows):
         self.cols=cols
@@ -50,7 +53,7 @@ class field:
 class Menu:
     def __init__(self,screen):
         self.screen = screen
-        self.font = pygame.font.SysFont("Visitor TT1 BRK", 40)
+        self.font = font
         self.buttons = [
             {"text": "Fácil", "rect": pygame.Rect(100,65,200,30), "action": self.start_easy_game},
             {"text": "Intermedio", "rect": pygame.Rect(100,125,200,30), "action": self.start_medium_game},
