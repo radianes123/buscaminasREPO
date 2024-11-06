@@ -52,10 +52,10 @@ class Menu:
         self.screen = screen
         self.font = pygame.font.SysFont("Visitor TT1 BRK", 30)
         self.buttons = [
-            {"text": "Fácil", "rect": pygame.Rect(100,50,200,80), "action": self.start_easy_game}
-            {"text": "Intermedio", "rect": pygame.Rect(100,150,200,80), "action": self.start_medium_game}
-            {"text": "Difícil", "rect": pygame.Rect(100,250,200,80), "action": self.start_hard_game}
-            {"text": "Salir", "rect": pygame.Rect(100,350,200,80), "action": self.quit_game}
+            {"text": "Fácil", "rect": pygame.Rect(100,65,200,30), "action": self.start_easy_game},
+            {"text": "Intermedio", "rect": pygame.Rect(100,125,200,30), "action": self.start_medium_game},
+            {"text": "Difícil", "rect": pygame.Rect(100,185,200,30), "action": self.start_hard_game},
+            {"text": "Salir", "rect": pygame.Rect(100,245,200,30), "action": self.quit_game}
         ]
 
     def draw(self):
@@ -89,20 +89,20 @@ class Menu:
         pygame.quit()
         sys.exit()
 
-    def main():
-        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("Buscaminas")
+def main():
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Buscaminas")
     
-        menu = Menu(screen)
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                menu.event(event)
+    menu = Menu(screen)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            menu.event(event)
     
-            menu.draw()
-            pygame.display.flip()
+        menu.draw()
+        pygame.display.flip()
 
 if __name__ == "__main__":
     main()
