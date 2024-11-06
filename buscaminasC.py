@@ -1,6 +1,15 @@
 import numpy as np
 import pygame, random, sys
-    
+
+
+pygame.init()
+
+WHITE = (255,255,255)
+BLACK = (0,0,0)
+
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 300
+
 class field:
     def __init__(self,cols,rows):
         self.cols=cols
@@ -39,6 +48,24 @@ class Menu:
             {"text": "Salir", "rect": pygame.Rect(100,350,200,80), "action": self.quit_game}
         ]
 
+    def draw(self):
+        self.screen.fill(BLACK)
+        title = self.font.render("Buscaminas", True, WHITE)
+        self.screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 10))
+
+        for button in self.buttons:
+            pygame.draw.rect(self.screen, BLACK, button["rect"])
+            label = self.font.render(button["text"], True, WHITE)
+            self.screen.blit(label, (button["rect"].x + button["rect"].width // 2 - label.get_width() // 2,
+                                     button["rect"].y + button["rect"].height // 2 - label.get_height() // 2))
+
+    def event(self,event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for button in self.buttons:
+                if button["rect"].collidepoint(mouse_pos):
+                    button["action"]()
+                    
     def start_easy_game(self):
         Game(self.screen, "Fácil").run()
 
@@ -51,3 +78,21 @@ class Menu:
     def quit_game(self):
         pygame.quit()
         sys.exit()
+
+    def main():
+        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Buscaminas")
+    
+        menu = Menu(screen)
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                menu.event(event)
+    
+            menu.draw()
+            pygame.display.flip()
+
+if __name__ == "__main__":
+    main()
