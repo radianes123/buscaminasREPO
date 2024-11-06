@@ -18,32 +18,6 @@ class field:
         self.cols=cols
         self.rows=rows
         self.gameField=np.zeros((rows,cols)) # Crear matriz de juego
-        self.playField=np.zeros((rows,cols)) # Crear matriz de jugadas
-
-    def generateField(self,bombs):
-        for i in range(bombs-1):
-            excluded=[] # Lista de elementos excluídos para que no se repitan
-            if i==0: # Si es la primer bomba, se salta el proceso de verificación
-                bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición de la bomba
-                excluded.append(bombpos) # Excluir dicha posición
-                self.gameField[bombpos[0],bombpos[1]]="b" # Colocar la bomba en la matriz de juego
-            else:
-                k=0
-                while k==0:
-                    fail=False
-                    for j in excluded:
-                        bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)]
-                        if bombpos==j:
-                            fail=True
-                    if fail==False:
-                        excluded.append(bombpos)
-                        self.gameField[bombpos[0],bombpos[1]]="b"
-                        k+=1
-    class field:
-    def __init__(self,cols,rows):
-        self.cols=cols
-        self.rows=rows
-        self.gameField=np.zeros((rows,cols)) # Crear matriz de juego
     def __repr__(self):
         return f'{self.gameField}'
     def generateField(self,bombs):
@@ -76,6 +50,7 @@ class field:
                         if self.gameField[row+i,col+j]==101:
                             bombs+=1
             return bombs
+
 class Menu:
     def __init__(self,screen):
         self.screen = screen
