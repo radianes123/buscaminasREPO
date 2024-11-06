@@ -12,7 +12,7 @@ class field:
     def __init__(self,cols,rows):
         self.cols=cols
         self.rows=rows
-        self.gameField=np.zeros(cols,rows)
+        self.gameField=np.zeros(cols,rows) # Crear matriz de ceros
 
     def generateField(self):
         
