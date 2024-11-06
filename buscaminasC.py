@@ -10,7 +10,7 @@ class field:
 
     def generateField(self,bombs):
         for i in range(bombs-1):
-            excluded=[] # Elementos excluídos para que no se repitan
+            excluded=[] # Lista de elementos excluídos para que no se repitan
             if i==0: # Si es la primer bomba, se salta el proceso de verificación
                 bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición de la bomba
                 excluded.append(bombpos) # Excluir dicha posición
