@@ -50,7 +50,7 @@ class field:
 class Menu:
     def __init__(self,screen):
         self.screen = screen
-        self.font = pygame.font.SysFont("Visitor TT1 BRK", 30)
+        self.font = pygame.font.SysFont("Visitor TT1 BRK", 40)
         self.buttons = [
             {"text": "Fácil", "rect": pygame.Rect(100,65,200,30), "action": self.start_easy_game},
             {"text": "Intermedio", "rect": pygame.Rect(100,125,200,30), "action": self.start_medium_game},
@@ -60,7 +60,7 @@ class Menu:
 
     def draw(self):
         self.screen.fill(BLACK)
-        title = self.font.render("Buscaminas", True, WHITE)
+        title = self.font.render("BUSCAMINAS", True, WHITE)
         self.screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 10))
 
         for button in self.buttons:
