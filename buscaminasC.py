@@ -1,13 +1,5 @@
 import numpy as np
 import pygame, random, sys
-
-class bomb:
-    def __init__(self,col,row):
-        self.posx=col
-        self.posy=row
-
-    def __repr__(self):
-        return f'Bomba en c:{self.col} r:{self.row}'
     
 class field:
     def __init__(self,cols,rows):
@@ -19,11 +11,22 @@ class field:
     def generateField(self,bombs):
         for i in range(bombs-1):
             excluded=[] # Elementos excluídos para que no se repitan
-            if i==0:
-                excluded.append(ra.randint(0,self.rows-1),ra.randint(0,self.cols-1))
+            if i==0: # Si es la primer bomba, se salta el proceso de verificación
+                bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición de la bomba
+                excluded.append(bombpos) # Excluir dicha posición
+                self.gameField[bombpos[0],bombpos[1]]="b" # Colocar la bomba en la matriz de juego
             else:
-                for j in excluded:
-                    if excluded
+                k=0
+                while k==0:
+                    fail=False
+                    for j in excluded:
+                        bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)]
+                        if bombpos==j:
+                            fail=True
+                    if fail==False:
+                        excluded.append(bombpos)
+                        self.gameField[bombpos[0],bombpos[1]]="b"
+                        k+=1
         
 class Menu:
     def __init__(self,screen):
