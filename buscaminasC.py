@@ -36,7 +36,17 @@ class field:
                         excluded.append(bombpos)
                         self.gameField[bombpos[0],bombpos[1]]="b"
                         k+=1
-        
+    def detectBomb(self,col,row):
+        if self.gameField[col,row]=="b":
+            return "b"
+        else:
+            bombs=0
+            for i in range(-1,1,1):
+                for j in range(-1,1,1):
+                    if col+i>=0 and col+i<=self.cols and row+j>=0 and row+j<=self.rows:
+                        if self.gameField[row+1]=="b":
+                            bombs+=1
+            return bombs
 class Menu:
     def __init__(self,screen):
         self.screen = screen
