@@ -23,7 +23,7 @@ class field:
     def generateField(self,bombs):
         excluded=[] # Lista de elementos excluídos para que no se repitan
         for i in range(bombs):
-            if i==0: # Si es la primer bomba, se salta el proceso de verificación
+            if i==0: # Si e3s la primer bomba, se salta el proceso de verificación
                 bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición de la bomba
                 excluded.append(bombpos) # Excluir dicha posición
                 self.gameField[bombpos[0],bombpos[1]]=101 # Colocar la bomba en la matriz de juego
@@ -50,6 +50,7 @@ class field:
                         if self.gameField[row+i,col+j]==101:
                             bombs+=1
             return bombs
+       
 
 class Menu:
     def __init__(self,screen):
