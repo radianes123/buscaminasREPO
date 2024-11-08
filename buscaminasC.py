@@ -40,7 +40,11 @@ class field:
                         self.gameField[bombpos[0],bombpos[1]]=101
                         break
     def detectBomb(self,row,col):
-        if self.gameField[row,col]==101: # Si la celda elegida por el jugador es una bomba, devuelve "b"
+        """
+        Esta función detecta una bomba en un cuadrado 3x3 con centro en una celda elegida por el jugador, si hay una bomba, devuelve un STRING "b".
+        Si no hay una bomba en la casilla, revisa el cuadrado en busca de bombas, y devolverá el número de bombas que encuentre.
+        """
+        if self.gameField[row,col]==101:
             return "b"
         else:
             bombs=0
@@ -48,7 +52,7 @@ class field:
                 for j in range(-1,2,1):  # Busca de las columnas col-1 hasta col+1
                     if col+j>=0 and col+j<=self.cols and row+i>=0 and row+i<=self.rows:
                         if self.gameField[row+i,col+j]==101:
-                            bombs+=1 # 
+                            bombs+=1 
             return bombs
        
 
