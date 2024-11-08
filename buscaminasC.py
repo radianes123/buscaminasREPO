@@ -14,6 +14,7 @@ font_path = "Grand9k_Pixel.ttf"
 font = pygame.font.Font(font_path, 30)
 
 class field:
+    # IMPORTANTE, LAS BOMBAS TIENEN EL CÓDIGO "101" EN LA MATRIZ DE JUEGO.
     def __init__(self,cols,rows):
         self.cols=cols
         self.rows=rows
@@ -47,7 +48,7 @@ class field:
                 for j in range(-1,2,1):  # Busca de las columnas col-1 hasta col+1
                     if col+j>=0 and col+j<=self.cols and row+i>=0 and row+i<=self.rows:
                         if self.gameField[row+i,col+j]==101:
-                            bombs+=1
+                            bombs+=1 # 
             return bombs
        
 
