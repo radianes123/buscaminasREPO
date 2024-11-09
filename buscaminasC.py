@@ -14,24 +14,28 @@ font_path = "Grand9k_Pixel.ttf"
 font = pygame.font.Font(font_path, 30)
 
 class field:
-    # IMPORTANTE, LAS BOMBAS TIENEN EL CÓDIGO "101" EN LA MATRIZ DE JUEGO.
-    def __init__(self,cols,rows):
+    def __init__(self,cols,rows,bombs):
         self.cols=cols
         self.rows=rows
         self.gameField=np.zeros((rows,cols)) # Crear matriz de juego
+        self.flagField=np.zeros((rows,cols)) # Crear matriz de juego
+        self.bombs=bombs
+        self.flags=bombs
+        self.flaggedBombs=0
     def __repr__(self):
-        return f'{self.gameField}'
-    def generateField(self,bombs):
+        return f'Campo de bombas:\n{self.gameField}\nCampo de jugadas\n{self.flagField}'
+    def generateField(self):
         excluded=[] # Lista de elementos excluídos para que no se repitan
-        for i in range(bombs):
-            if i==0: # Si es la primer bomba, se salta el proceso de verificación
-                bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición aleatoria generada de la bomba
+        for i in range(self.bombs):
+            if i==0: # Si e3s la primer bomba, se salta el proceso de verificación
+                bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición de la bomba
                 excluded.append(bombpos) # Excluir dicha posición
                 self.gameField[bombpos[0],bombpos[1]]=101 # Colocar la bomba en la matriz de juego
             else:
+                k=0
                 while True:
                     fail=0
-                    bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición aleatoria generada de la bomba
+                    bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)]
                     for j in range(len(excluded)):
                         if bombpos[0]==excluded[j][0] and bombpos[1]==excluded[j][1]:
                             fail+=1
@@ -40,22 +44,41 @@ class field:
                         self.gameField[bombpos[0],bombpos[1]]=101
                         break
     def detectBomb(self,row,col):
-        """
-        Esta función detecta una bomba en un cuadrado 3x3 con centro en una celda elegida por el jugador, si hay una bomba, devuelve un STRING "b".
-        Si no hay una bomba en la casilla, revisa el cuadrado en busca de bombas, y devolverá el número de bombas que encuentre.
-        """
-        if self.gameField[row,col]==101:
-            return "b"
-        else:
-            bombs=0
-            for i in range(-1,2,1): # Busca de las filas row-1 hasta row+1
-                for j in range(-1,2,1):  # Busca de las columnas col-1 hasta col+1
-                    if col+j>=0 and col+j<=self.cols and row+i>=0 and row+i<=self.rows:
-                        if self.gameField[row+i,col+j]==101:
-                            bombs+=1 
-            return bombs
-       
+        bombs=0
+        for i in range(-1,2,1):
+            for j in range(-1,2,1):
+                if col+j>=0 and col+j<=self.cols and row+i>=0 and row+i<=self.rows:
+                    if self.gameField[row+i,col+j]==101:
+                        bombs+=1
+        return bombs
+            
+    def checkFlagged(self):
+        flaggedBombs=0
+        for i in range(0,self.rows-1):
+            for j in range(0,self.cols-1):
+                if((self.gameField[i,j]==101) and (self.flagField[i,j]==2)):
+                    flaggedBombs+=1
+        return flaggedBombs
 
+    def cellAction(self,row,col,action):
+        if action=="clean":
+            if self.gameField[row,col]==101:
+                return False,True
+            else:
+                self.flagField[row,col]=1
+        elif action=="add" or action=="remove" and self.flagField[row,col]!=1:
+            if action=="remove" and self.flags<self.bombs:
+                self.flagField[row,col]=0
+                self.flags+=1
+            elif action=="add" and self.flags>0:  
+                self.flagField[row,col]=2
+                self.flags-=1
+            if((action=="remove" and self.flags<self.bombs) or (action=="add" and self.flags>0)):  
+                n=self.checkFlagged()
+                if n==self.bombs:
+                    return True,False
+        return False,False
+       
 class Menu:
     def __init__(self,screen):
         self.screen = screen
