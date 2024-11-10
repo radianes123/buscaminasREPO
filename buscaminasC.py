@@ -85,8 +85,8 @@ class Game:
         self.first_click = True  # Indica si el jugador aún no ha hecho el primer clic
 
     def run(self):
-        game_over = False
-        while not game_over:
+        gameover = False
+        while not gameover:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -105,10 +105,10 @@ class Game:
 
                     if action == "win":
                         self.show_message("¡Ganaste!")
-                        game_over = True
+                        gameover = True
                     elif action == "lose":
                         self.show_message("¡Perdiste!")
-                        game_over = True
+                        gameover = True
             self.draw()
 
     def draw(self):
