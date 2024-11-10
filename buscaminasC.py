@@ -17,20 +17,20 @@ class field:
     def __init__(self,cols,rows,bombs):
         self.cols=cols
         self.rows=rows
-        self.gameField=np.zeros((rows,cols)) # Crear matriz de juego
-        self.flagField=np.zeros((rows,cols)) # Crear matriz de juego
+        self.bombField=np.zeros((rows,cols)) # Crear matriz de juego
+        self.playingField=np.zeros((rows,cols)) # Crea una matriz en la cual se guardarán las jugada hechas por que jugador
         self.bombs=bombs
         self.flags=bombs
         self.flaggedBombs=0
     def __repr__(self):
-        return f'Campo de bombas:\n{self.gameField}\nCampo de jugadas\n{self.flagField}'
+        return f'Campo de bombas:\n{self.bombField}\nCampo de jugadas\n{self.playingField}'
     def generateField(self):
         excluded=[] # Lista de elementos excluídos para que no se repitan
         for i in range(self.bombs):
             if i==0: # Si e3s la primer bomba, se salta el proceso de verificación
                 bombpos=[random.randint(0,self.rows-1),random.randint(0,self.cols-1)] # Posición de la bomba
                 excluded.append(bombpos) # Excluir dicha posición
-                self.gameField[bombpos[0],bombpos[1]]=101 # Colocar la bomba en la matriz de juego
+                self.bombField[bombpos[0],bombpos[1]]=101 # Colocar la bomba en la matriz de juego
             else:
                 k=0
                 while True:
@@ -41,7 +41,7 @@ class field:
                             fail+=1
                     if fail==0:
                         excluded.append(bombpos)
-                        self.gameField[bombpos[0],bombpos[1]]=101
+                        self.bombField[bombpos[0],bombpos[1]]=101
                         break
     def detectBomb(self,row,col):
         """
@@ -52,7 +52,7 @@ class field:
         for i in range(-1,2,1):
             for j in range(-1,2,1):
                 if col+j>=0 and col+j<=self.cols and row+i>=0 and row+i<=self.rows:
-                    if self.gameField[row+i,col+j]==101:
+                    if self.bombField[row+i,col+j]==101:
                         bombs+=1
         return bombs
     def getFlags(self):
@@ -65,7 +65,7 @@ class field:
         flaggedBombs=0
         for i in range(0,self.rows-1):
             for j in range(0,self.cols-1):
-                if((self.gameField[i,j]==101) and (self.flagField[i,j]==2)):
+                if((self.bombField[i,j]==101) and (self.playingField[i,j]==2)):
                     flaggedBombs+=1
         return flaggedBombs
 
@@ -74,33 +74,35 @@ class field:
         Devuelve dos valores, el primero es el <comando> y el segundo es para traspasar valores cuando se necesite.
         <action> es lo que se hace con la celda, dependiendo de si se quiere despejar o añadir una bandera.
         """
-        if self.flagField[row,col]!=1: # Verificar si la celda no se despejó antes
+        if self.playingField[row,col]!=1: # Verificar si la celda no se despejó antes
             if action=="clear":
-                if self.flagField[row,col]!=2:
-                    if self.gameField[row,col]==101:
-                        return "lose",0
+                if self.playingField[row,col]!=2: # Revisa si la celda no está <<Bandereada>>
+                    if self.bombField[row,col]==101:
+                        return "lose",0 # Esto ejectuará una función de derrota
                     else:
-                        self.flagField[row,col]=1
+                        self.playingField[row,col]=1
                         bombs=self.detectBomb()
                         return "cell.clear",bombs # Ejecutará una función que graficará el número de bombas cerca de la celda
                 return "none",0
-            elif action=="add" or action=="remove":
-                i=-1 # Si se elige "add", devolverá "cell.flag.add", y si se elige "remove", "cell.flag.remove"
+            elif action=="flag":
+                i=-1 # Es el índice de <orders>, si se elige "remove", quedará como 0 y dará "cell.flag.add", si es "add", quedará como uno y se tendrá "cell.flag.remove"
                 orders=["cell.flag.add","cell.flag.remove"]
-                if action=="remove" and self.flags<self.bombs:
-                    self.flagField[row,col]=0
-                    self.flags+=1
-                    i+=2
-                elif action=="add" and self.flags>0:  
-                    self.flagField[row,col]=2
+                if self.playingField[row,col]==0 and self.flags>0: 
+                    self.playingField[row,col]=2
                     self.flags-=1
                     i+=1
-                if((action=="remove" and self.flags<self.bombs) or (action=="add" and self.flags>0)):  
+                elif self.playingField[row,col]==2 and self.flags<self.bombs:
+                    self.playingField[row,col]=0
+                    self.flags+=1
+                    i+=2
+                if((self.playingField[row,col]==0 and self.flags>0) or (self.playingField[row,col]==2 and self.flags<self.bombs)):  
                     n=self.checkFlagged()
                     if n==self.bombs:
                         return "win",0 # Si el número de banderas acertadas es igual al número de bombas, se termina el juego
                     else:
                         return orders[i],0
+                        # Para "cell.flag.add", ejectuará una función que dibuje una bandera
+                        # Para "cell.flag.remove", ejecutará una función que borre gráficamente la bandera previamente puesta
                 return "none",0
         else:
             return "none",0
