@@ -81,7 +81,7 @@ class field:
                         return "lose",0 # Esto ejectuará una función de derrota
                     else:
                         self.playingField[row,col]=1
-                        bombs=self.detectBomb()
+                        bombs=self.detectBomb(row,col)
                         return "cell.clear",bombs # Ejecutará una función que graficará el número de bombas cerca de la celda
                 return "none",0
             elif action=="flag":
@@ -106,21 +106,72 @@ class field:
                 return "none",0
         else:
             return "none",0
-       
+
+
+
+class Game:
+    def __init__(self, screen, cols, rows, bombs):
+        self.screen = screen
+        self.field = field(cols,rows,bombs)
+        self.cols = cols
+        self.rows = rows
+        self.bombs = bombs
+
+    def run(self):
+        gameover=False
+        while gameover==False:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    x,y=pygame.mouse.get_pos()
+                    col,row =x//(SCREEN_WIDTH//self.cols), y//(SCREEN_HEIGHT//self.rows)
+                    action,_=self.field.cellAction(row,col,"clear") #realiza la accion de limpiar el campo
+                    if action =="win":
+                        self.show_message("!Ganaste¡")
+                        gameover=True
+                    elif action=="lose":
+                        self.show_message("!Perdiste¡")
+                        gameover=True
+            self.draw()
+
+    def draw(self):
+        cell_width=SCREEN_WIDTH//self.cols
+        cell_height=SCREEN_HEIGHT//self.rows
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if self.field.playingField[row,col] == 1:
+                    color = WHITE
+                else:
+                    color = BLACK
+                pygame.draw.rect(self.screen, color, pygame.Rect(col*cell_width,row*cell_height,cell_width,cell_height))
+        pygame.display.flip()
+
+    def show_message(self,msg):
+        endgame_msg=pygame.Rect(50,120,300,60)
+        pygame.draw.rect(self.screen, BLACK, endgame_msg)
+        msg_text=font.render(msg, True, WHITE)
+        self.screen.blit(msg_text, (endgame_msg.x + 50, endgame_msg.y + 15))
+        pygame.display.flip()
+        pygame.time.delay(2000)
+
+
+
 class Menu:
     def __init__(self,screen):
         self.screen = screen
-        self.font = font
+        self.font = pygame.font.SysFont("Visitor TT1 BRK", 30)
         self.buttons = [
-            {"text": "Fácil", "rect": pygame.Rect(100,65,200,30), "action": self.start_easy_game},
-            {"text": "Intermedio", "rect": pygame.Rect(100,125,200,30), "action": self.start_medium_game},
-            {"text": "Difícil", "rect": pygame.Rect(100,185,200,30), "action": self.start_hard_game},
-            {"text": "Salir", "rect": pygame.Rect(100,245,200,30), "action": self.quit_game}
+            {"text": "Fácil", "rect": pygame.Rect(100,50,200,80), "action": self.start_easy_game},
+            {"text": "Intermedio", "rect": pygame.Rect(100,150,200,80), "action": self.start_medium_game},
+            {"text": "Difícil", "rect": pygame.Rect(100,250,200,80), "action": self.start_hard_game},
+            {"text": "Salir", "rect": pygame.Rect(100,350,200,80), "action": self.quit_game},
         ]
 
     def draw(self):
         self.screen.fill(BLACK)
-        title = self.font.render("BUSCAMINAS", True, WHITE)
+        title = self.font.render("Buscaminas", True, WHITE)
         self.screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 10))
 
         for button in self.buttons:
@@ -137,13 +188,13 @@ class Menu:
                     button["action"]()
                     
     def start_easy_game(self):
-        Game(self.screen, "Fácil").run()
+        Game(self.screen, 8, 8,10).run()
 
     def start_medium_game(self):
-        Game(self.screen, "Intermedio").run()
+        Game(self.screen, 16,16,40).run()
 
     def start_hard_game(self):
-        Game(self.screen, "Difícil").run()
+        Game(self.screen, 30,16,99).run()
 
     def quit_game(self):
         pygame.quit()
