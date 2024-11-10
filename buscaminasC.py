@@ -85,7 +85,7 @@ class field:
                         return "cell.clear",bombs # Ejecutará una función que graficará el número de bombas cerca de la celda
                 return "none",0
             elif action=="flag":
-                i=-1 # Es el índice de <orders>, si se elige "remove", quedará como 0 y dará "cell.flag.add", si es "add", quedará como uno y se tendrá "cell.flag.remove"
+                i=-1 # Es el índice de <orders>
                 orders=["cell.flag.add","cell.flag.remove"]
                 if self.playingField[row,col]==0 and self.flags>0: 
                     self.playingField[row,col]=2
