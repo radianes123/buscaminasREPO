@@ -9,8 +9,8 @@ GRAY = (220, 220, 220)
 RED = (255, 0, 0)
 CELL_COLORS = {1: (0, 0, 255), 2: (0, 128, 0), 3: (255, 0, 0), 4: (0, 0, 128), 5: (128, 0, 0), 6: (0, 128, 128), 7: (0, 0, 0), 8: (128, 128, 128)}
 
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 300
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 
 font_path = "Grand9k_Pixel.ttf"
 font = pygame.font.Font(font_path, 20)
@@ -137,10 +137,10 @@ class Game:
         pygame.display.flip()
 
     def show_message(self, message):
-        endgame_msg = pygame.Rect(50, 120, 300, 60)
+        endgame_msg = pygame.Rect(300, 250, 300, 60)
         pygame.draw.rect(self.screen, BLACK, endgame_msg)
         msg_text = font.render(message, True, WHITE)
-        self.screen.blit(msg_text, (endgame_msg.x + 50, endgame_msg.y + 15))
+        self.screen.blit(msg_text, (endgame_msg.x + 50, endgame_msg.y))
         pygame.display.flip()
         pygame.time.delay(2000)
 
@@ -149,18 +149,18 @@ class Menu:
         self.screen = screen
         self.font = font
         self.buttons = [
-            {"text": "Fácil", "rect": pygame.Rect(100, 50, 200, 30), "action": self.start_easy_game},
-            {"text": "Intermedio", "rect": pygame.Rect(100, 100, 200, 30), "action": self.start_medium_game},
-            {"text": "Difícil", "rect": pygame.Rect(100, 150, 200, 30), "action": self.start_hard_game},
-            {"text": "Salir", "rect": pygame.Rect(100, 200, 200, 30), "action": self.quit_game},
+            {"text": "Fácil", "rect": pygame.Rect(300, 150, 200, 30), "action": self.start_easy_game},
+            {"text": "Intermedio", "rect": pygame.Rect(300, 250, 200, 30), "action": self.start_medium_game},
+            {"text": "Difícil", "rect": pygame.Rect(300, 350, 200, 30), "action": self.start_hard_game},
+            {"text": "Salir", "rect": pygame.Rect(300, 450, 200, 30), "action": self.quit_game},
         ]
 
     def draw(self):
         self.screen.fill(BLACK)
-        title = self.font.render("Buscaminas", True, WHITE)
+        title = self.font.render("BUSCAMINAS", True, WHITE)
         self.screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 10))
         for button in self.buttons:
-            pygame.draw.rect(self.screen, WHITE, button["rect"], 2)
+            pygame.draw.rect(self.screen, BLACK, button["rect"], 2)
             label = self.font.render(button["text"], True, WHITE)
             self.screen.blit(label, (button["rect"].x + button["rect"].width // 2 - label.get_width() // 2,
                                      button["rect"].y + button["rect"].height // 2 - label.get_height() // 2))
