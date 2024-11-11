@@ -5,7 +5,8 @@ pygame.init()
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-GRAY = (220, 220, 220)
+GRAY1 = (220, 220, 220)
+GRAY2 = (190,190,190)
 RED = (255, 0, 0)
 CELL_COLORS = {1: (0, 0, 255), 2: (0, 128, 0), 3: (255, 0, 0), 4: (0, 0, 128), 5: (128, 0, 0), 6: (0, 128, 128), 7: (0, 0, 0), 8: (128, 128, 128)}
 
@@ -82,11 +83,14 @@ class Game:
         self.cols = cols
         self.rows = rows
         self.bombs = bombs
+        self.gameover=False
         self.first_click = True  # Indica si el jugador aún no ha hecho el primer clic
+        self.bombs_image=pygame.transform.scale(pygame.image.load("bomb.png"),(SCREEN_HEIGHT // self.rows, SCREEN_HEIGHT // self.rows))
+        self.cell_width = SCREEN_WIDTH // self.cols
+        self.cell_height = SCREEN_HEIGHT // self.rows
 
     def run(self):
-        gameover = False
-        while not gameover:
+        while not self.gameover:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -94,29 +98,33 @@ class Game:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = pygame.mouse.get_pos()
                     col, row = x // (SCREEN_WIDTH // self.cols), y // (SCREEN_HEIGHT // self.rows)
-                    if event.button == 1:  # Left click to clear
+                    if event.button == 1:  #click izquierdo libera la casilla
                         # Generar bombas después del primer clic
                         if self.first_click:
                             self.field.generateField(row, col)
                             self.first_click = False
                         action, bombs_near = self.field.cellAction(row, col, "clear")
-                    elif event.button == 3:  # Right click to flag
+                    elif event.button == 3:  #click derecho pone las banderas
                         action, bombs_near = self.field.cellAction(row, col, "flag")
 
                     if action == "win":
                         self.show_message("¡Ganaste!")
-                        gameover = True
+                        self.gameover = True
                     elif action == "lose":
+                        for row in range(self.rows):
+                            for col in range(self.cols):
+                                rect = pygame.Rect(col * self.cell_width, row * self.cell_height, self.cell_width, self.cell_height)
+                                if (action== "win" or "lose") and self.field.bombField[row,col]==101:
+                                    self.screen.blit(self.bombs_image, rect.topleft)
                         self.show_message("¡Perdiste!")
-                        gameover = True
+                        self.gameover = True
             self.draw()
 
     def draw(self):
-        cell_width = SCREEN_WIDTH // self.cols
-        cell_height = SCREEN_HEIGHT // self.rows
+        
         for row in range(self.rows):
             for col in range(self.cols):
-                rect = pygame.Rect(col * cell_width, row * cell_height, cell_width, cell_height)
+                rect = pygame.Rect(col * self.cell_width, row * self.cell_height, self.cell_width, self.cell_height)
                 if self.field.playingField[row, col] == 1:
                     color = WHITE
                     pygame.draw.rect(self.screen, color, rect)
@@ -124,16 +132,17 @@ class Game:
                     if bombs_near > 0:
                         text_color = CELL_COLORS.get(bombs_near, BLACK)
                         text = font.render(str(bombs_near), True, text_color)
-                        text_rect = text.get_rect(center=(col * cell_width + cell_width // 2, row * cell_height + cell_height // 2))
+                        text_rect = text.get_rect(center=(col * self.cell_width + self.cell_width // 2, row * self.cell_height + self.cell_height // 2))
                         self.screen.blit(text, text_rect)
                 elif self.field.playingField[row, col] == 2:
-                    pygame.draw.rect(self.screen, GRAY, rect)
+                    pygame.draw.rect(self.screen, GRAY1, rect)
                     flag_text = font.render("?", True, RED)
-                    flag_rect = flag_text.get_rect(center=(col * cell_width + cell_width // 2, row * cell_height + cell_height // 2))
+                    flag_rect = flag_text.get_rect(center=(col * self.cell_width + self.cell_width // 2, row * self.cell_height + self.cell_height // 2))
                     self.screen.blit(flag_text, flag_rect)
                 else:
-                    pygame.draw.rect(self.screen, GRAY, rect)
-                pygame.draw.rect(self.screen, BLACK, rect, 1)  # Draw grid lines
+                    pygame.draw.rect(self.screen, GRAY1, rect)
+                pygame.draw.rect(self.screen, GRAY2, rect, 1)  
+
         pygame.display.flip()
 
     def show_message(self, message):
