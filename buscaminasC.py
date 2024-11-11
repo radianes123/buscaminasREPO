@@ -149,7 +149,7 @@ class Game:
         endgame_msg = pygame.Rect(300, 250, 300, 60)
         pygame.draw.rect(self.screen, BLACK, endgame_msg)
         msg_text = font.render(message, True, WHITE)
-        self.screen.blit(msg_text, (endgame_msg.x + 50, endgame_msg.y))
+        self.screen.blit(msg_text, (endgame_msg.x + 90, endgame_msg.y + 10))
         pygame.display.flip()
         pygame.time.delay(2000)
 
