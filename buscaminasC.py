@@ -7,13 +7,18 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (220, 220, 220)
 RED = (255, 0, 0)
+# Colores que se usan durante el juego
+
 NUMBER_COLORS = {1: (0, 0, 255), 2: (0, 128, 0), 3: (255, 0, 0), 4: (0, 0, 128), 5: (128, 0, 0), 6: (0, 128, 128), 7: (0, 0, 0), 8: (128, 128, 128)}
+# Colores para los números dentro del juego
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+# Tamaño de la pantalla 800x600
 
 font_path = "Grand9k_Pixel.ttf"
 font = pygame.font.Font(font_path, 20)
+# Fuente que se usa para el juego
 
 class Field:
     def __init__(self, cols, rows, bombs):
@@ -152,43 +157,47 @@ class Game:
 class Menu:
     def __init__(self, screen):
         self.screen = screen
-        self.font = font
+        self.font = font # Se usa la fuente especificada más arriba (Grand9k Pixel)
         self.buttons = [
             {"text": "Fácil", "rect": pygame.Rect(300, 150, 200, 30), "action": self.start_easy_game},
             {"text": "Intermedio", "rect": pygame.Rect(300, 250, 200, 30), "action": self.start_medium_game},
             {"text": "Difícil", "rect": pygame.Rect(300, 350, 200, 30), "action": self.start_hard_game},
             {"text": "Salir", "rect": pygame.Rect(300, 450, 200, 30), "action": self.quit_game},
-        ]
+        ] # Diccionario que contiene las palabras, posiciones y acciones de los botones
 
     def draw(self):
-        self.screen.fill(BLACK)
-        title = self.font.render("BUSCAMINAS", True, WHITE)
-        self.screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 10))
+        self.screen.fill(BLACK) # Se llena la pantalla de color negro
+        title = self.font.render("BUSCAMINAS", True, WHITE) # Titulo del menú
+        self.screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 10)) # Posición del titulo
         for button in self.buttons:
             pygame.draw.rect(self.screen, BLACK, button["rect"], 2)
             label = self.font.render(button["text"], True, WHITE)
             self.screen.blit(label, (button["rect"].x + button["rect"].width // 2 - label.get_width() // 2,
                                      button["rect"].y + button["rect"].height // 2 - label.get_height() // 2))
+            # Dibuja los rectángulos para las opciones del menú, obteniendo datos del diccionario en el constructor
 
     def event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             for button in self.buttons:
                 if button["rect"].collidepoint(mouse_pos):
-                    button["action"]()
+                    button["action"]() # Obteniendo la posición del mouse, si este colisiona con algún botón se realiza la acción correspondiente al botón
 
     def start_easy_game(self):
         Game(self.screen, 8, 8, 10).run()
+        # Se inicia el juego en modo fácil, con 8 columnas, 8 filas y 10 bombas
 
     def start_medium_game(self):
         Game(self.screen, 16, 16, 40).run()
+        # Se inicia el juego en modo fácil, con 16 columnas, 16 filas y 40 bombas
 
     def start_hard_game(self):
         Game(self.screen, 30, 16, 99).run()
-
+        # Se inicia el juego en modo fácil, con 30 columnas, 16 filas y 99 bombas
+    
     def quit_game(self):
         pygame.quit()
-        sys.exit()
+        sys.exit() # Se cierra el juego
 
 def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -202,6 +211,7 @@ def main():
             menu.event(event)
         menu.draw()
         pygame.display.flip()
+        # Función para iniciar el menú
 
 if __name__ == "__main__":
     main()
