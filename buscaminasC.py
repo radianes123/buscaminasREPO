@@ -94,7 +94,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
+                elif event.type == pygame.MOUSEBUTTONDOWN: #ve la configuracion de los botones
                     x, y = pygame.mouse.get_pos()
                     col, row = x // (SCREEN_WIDTH // self.cols), y // (SCREEN_HEIGHT // self.rows)
                     if event.button == 1:  #click izquierdo libera la casilla
@@ -122,27 +122,26 @@ class Game:
         for row in range(self.rows):
             for col in range(self.cols):
                 rect = pygame.Rect(col * self.cell_width, row * self.cell_height, self.cell_width, self.cell_height)
-                if self.field.playingField[row, col] == 1:
-                    color = WHITE # 
-                    pygame.draw.rect(self.screen, color, rect)
+                if self.field.playingField[row, col] == 1: #detectara las bombas cercanas
+                    pygame.draw.rect(self.screen, WHITE, rect)
                     bombs_near = self.field.detectBomb(row, col)
-                    if bombs_near > 0:
+                    if bombs_near > 0: #Colocará los numeros de bombas cercanas dentro de las celdas correspodientes
                         text_color = NUMBER_COLORS.get(bombs_near, BLACK)
                         text = font.render(str(bombs_near), True, text_color)
                         text_rect = text.get_rect(center=(col * self.cell_width + self.cell_width // 2, row * self.cell_height + self.cell_height // 2))
                         self.screen.blit(text, text_rect)
-                elif self.field.playingField[row, col] == 2:
+                elif self.field.playingField[row, col] == 2: #contiene el formato de las banderas y la posicion
                     pygame.draw.rect(self.screen, GRAY, rect)
                     flag_text = font.render("?", True, RED)
                     flag_rect = flag_text.get_rect(center=(col * self.cell_width + self.cell_width // 2, row * self.cell_height + self.cell_height // 2))
                     self.screen.blit(flag_text, flag_rect)
                 else:
-                    pygame.draw.rect(self.screen, GRAY, rect)
-                pygame.draw.rect(self.screen, WHITE, rect, 1)  
+                    pygame.draw.rect(self.screen, GRAY, rect) #dibuja las celdas poniendole color gris
+                pygame.draw.rect(self.screen, WHITE, rect, 1)  #dibuja los bordes de las celdas
 
         pygame.display.flip()
 
-    def show_message(self, message): # pondra un rectangulo negro con el mensaje correspondiente
+    def show_message(self, message): # contiene la configuracion del recuadro de texto que se mostrará cuando termine el juego
         endgame_msg = pygame.Rect(300, 250, 300, 60)
         pygame.draw.rect(self.screen, BLACK, endgame_msg)
         msg_text = font.render(message, True, WHITE)
