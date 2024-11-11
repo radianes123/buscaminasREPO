@@ -24,22 +24,26 @@ class Field:
     def __init__(self, cols, rows, bombs):
         self.cols = cols
         self.rows = rows
-        self.bombField = np.zeros((rows, cols))
-        self.playingField = np.zeros((rows, cols))
+        self.bombField = np.zeros((rows, cols)) # Matriz en donde se colocarán las bombas
+        self.playingField = np.zeros((rows, cols)) # Matriz en donde se colocarán las casillas despejadas y banderas
         self.bombs = bombs
         self.flags = bombs
 
     def generateField(self, exclude_row, exclude_col):
-        excluded = [(exclude_row, exclude_col)]
+        excluded = [(exclude_row, exclude_col)] # Lista de elementos excluídos para que no se repitan
         for _ in range(self.bombs):
             while True:
-                bombpos = (random.randint(0, self.rows - 1), random.randint(0, self.cols - 1))
+                bombpos = (random.randint(0, self.rows - 1), random.randint(0, self.cols - 1)) # Posición de la bomba
                 if bombpos not in excluded:
-                    excluded.append(bombpos)
-                    self.bombField[bombpos[0], bombpos[1]] = 101
+                    excluded.append(bombpos) # Excluir dicha posición
+                    self.bombField[bombpos[0], bombpos[1]] = 101 # Colocar la bomba en la matriz de juego
                     break
 
     def detectBomb(self, row, col):
+        """
+        Detecta bombas cercanas en un cuadrado 3x3, con centro en la celda seleccionada, devuelve
+        dicho número de bombas.
+        """
         bombs = 0
         for i in range(-1, 2):
             for j in range(-1, 2):
@@ -49,6 +53,9 @@ class Field:
         return bombs
 
     def checkFlagged(self):
+        """
+        Revisa las bombas acertadas, devuelve la cantidad de estas.
+        """
         flaggedBombs = 0
         for i in range(self.rows):
             for j in range(self.cols):
@@ -57,24 +64,24 @@ class Field:
         return flaggedBombs
 
     def cellAction(self, row, col, action):
-        if self.playingField[row, col] != 1:
+        if self.playingField[row, col] != 1: # Verificar si la celda no se despejó antes
             if action == "clear":
-                if self.playingField[row, col] != 2:
-                    if self.bombField[row, col] == 101:
-                        return "lose", 0
+                if self.playingField[row, col] != 2: # Revisa si la celda no tiene una bandera
+                    if self.bombField[row, col] == 101: # Si la casilla a despejar tiene una bomba, se pierde el juego.
+                        return "lose", 0 
                     else:
                         self.playingField[row, col] = 1
                         bombs = self.detectBomb(row, col)
                         return "cell.clear", bombs
                 return "none", 0
             elif action == "flag":
-                if self.playingField[row, col] == 0 and self.flags >= 0:
+                if self.playingField[row, col] == 0 and self.flags >= 0: # Si no hay banderas en la casilla y quedan por colocar, se coloca una.
                     self.playingField[row, col] = 2
                     self.flags -= 1
-                    if self.checkFlagged() == self.bombs:
-                        return "win", 0
+                    if self.checkFlagged() == self.bombs: # Si todas las banderas coinciden con todas las bombas se gana el juego
+                        return "win", 0 
                     return "cell.flag.add", 0
-                elif self.playingField[row, col] == 2:
+                elif self.playingField[row, col] == 2: # Si hay banderas en la casilla, la quita
                     self.playingField[row, col] = 0
                     self.flags += 1
                     return "cell.flag.remove", 0
